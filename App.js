@@ -1,75 +1,71 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Picker } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  Picker,
+} from "react-native";
 
 export default function App() {
   const [prestamo, setPrestamo] = useState("");
-  const [tipoprestamo, setTipoPrestamo] = useState("");
+  const [tipoprestamo, setTipoPrestamo] = useState("vivienda");
   const [numerocuotas, setNumerocuotas] = useState("");
   const [valorcuotas, setValorCuotas] = useState("");
-  const [totaldeuda, setTotalDeuda] = useState("");
-  const [resultado, setResultado] = useState("");
+  const [valordeuda, setValorDueda] = useState("");
 
   const calcPrestamo = () => {
-    if (prestamo != "" && tipoprestamo != "" && valorcuotas!= "" && numerocuotas != "") {
-      let totaldeuda = 0;
-      if (prestamo >= 4000000000 && prestamo <= 100000000000) {
-        switch (tipoprestamo) {
-          case 'vivienda':
-            if (numerocuotas >= 12, numerocuotas <= 60) {
-              totaldeuda = prestamo * 0.5;
-              valorcuotas = totaldeuda / numerocuotas;
-            }
-            else {
-              alert("el numero de cuotas debe ser mayor o igual a 12 y menor o igual que 60")
-            }
-            break;
-          case 'educacion':
-            totaldeuda = prestamo * 0.7;
-            if (numerocuotas >= 12, numerocuotas <= 60) {
-              valorcuotas = totaldeuda / numerocuotas;
-            }
-            else {
-              alert("el numero de cuotas debe ser mayor o igual a 12 y menor o igual que 60")
-            }
-            break;
-          case 'vehiculo':
-            totaldeuda = prestamo * 1.5;
-            if (numerocuotas >= 12, numerocuotas <= 60) {
-              valorcuotas = totaldeuda / numerocuotas;
-            }
-            else {
-              alert("el numero de cuotas debe ser mayor o igual a 12 y menor o igual que 60")
-            }
-            break;
-          case 'invercion':
-            totaldeuda = prestamo * 2;
-            if (numerocuotas >= 12, numerocuotas <= 60) {
-              valorcuotas = totaldeuda / numerocuotas;
-            }
-            else {
-              alert("el numero de cuotas debe ser mayor o igual a 12 y menor o igual que 60")
-            }
-            break;
-          case 'c':
-            totaldeuda = 0;
-            setPrestamo("");
-            setTipoPrestamo('');
-            setValorCuotas("");
-            setTotalDeuda("");
-            break;
-        }
-        setResultado(totaldeuda);
-      }
-      else {
-        alert("el prestamo tiene que ser mayor o igual a 4 millones y menor a 1 millon")
-      }
+    if (prestamo < 4000000000 || prestamo > 100000000000) {
+      alert(
+        "EL valor del prestamo teine queser entre 4.000.000.000 y 10.000.000.000"
+      );
     }
-    else {
-      alert("Se debe ingresar los valores");
+    if ((numerocuotas < 12 || numerocuotas > 60)) {
+      alert(
+        "el numero de cuotas debe ser mayor o igual a 12 y menor o igual que 60"
+      );
+    } else {
+      switch (tipoprestamo) {
+        case "vivienda":
+          setValorCuotas(
+            (prestamo * 0.005 * numerocuotas + parseInt(prestamo)) /
+            numerocuotas
+          );
+          setValorDueda(prestamo * 0.005 * numerocuotas + parseInt(prestamo));
+          break;
+        case "educacion":
+          setValorCuotas(
+            (prestamo * 0.008 * numerocuotas + parseInt(prestamo)) /
+            numerocuotas
+          );
+          setValorDueda(prestamo * 0.008 * numerocuotas + parseInt(prestamo));
+          break;
+        case "vehiculo":
+          setValorCuotas(
+            (prestamo * 0.015 * numerocuotas + parseInt(prestamo)) /
+            numerocuotas
+          );
+          setValorDueda(prestamo * 0.015 * numerocuotas + parseInt(prestamo));
+          break;
+        case "invercion":
+          setValorCuotas(
+            (prestamo * 0.02 * numerocuotas + parseInt(prestamo)) / numerocuotas
+          );
+          setValorDueda(prestamo * 0.02 * numerocuotas + parseInt(prestamo));
+          break;
+      }
     }
   };
-  
+
+  const limpiar = () => {
+    setPrestamo("");
+    setNumerocuotas("");
+    setValorCuotas("");
+    setValorDueda("");
+    setTipoPrestamo("");
+  };
 
   return (
     <View style={styles.container}>
@@ -78,47 +74,41 @@ export default function App() {
       <Text>Valor del prestamo</Text>
       <TextInput
         style={{ borderBottomWidth: 2 }}
-        onChangeText={prestamo => setPrestamo(prestamo)}
+        onChangeText={setPrestamo}
+        onValueChange={(itemValue) => setPrestamo(itemValue)}
+        value={prestamo}
       />
       <Text>{"\n"}</Text>
       <Text>Tipo de prestamo</Text>
       <Picker
-            selectedValue={tipoprestamo}
-            style={{ height: 35, width: 180, borderColor: "white" }}
-            onValueChange={(itemValue, itemIndex) => setTipoPrestamo(itemValue)}
-          >
-            <Picker.Item label="Selecciona viaje" value="" />
-            <Picker.Item label="Vivienda" value="vivienda" />
-            <Picker.Item label="Educacion" value="educacion" />
-            <Picker.Item label="Vehiculo" value="vehiculo" />
-            <Picker.Item label="Invercion" value="invercion" />
-          </Picker>
+        selectedValue={tipoprestamo}
+        style={{ height: 35, width: 180, borderColor: "white" }}
+        onValueChange={(itemValue) => setTipoPrestamo(itemValue)}
+      >
+        <Picker.Item label="Selecciona viaje" value="" />
+        <Picker.Item label="Vivienda" value="vivienda" />
+        <Picker.Item label="Educacion" value="educacion" />
+        <Picker.Item label="Vehiculo" value="vehiculo" />
+        <Picker.Item label="Invercion" value="invercion" />
+      </Picker>
       <Text>{"\n"}</Text>
-      <Text>Nro de Cuotas</Text>
+      <Text>N° de Cuotas</Text>
       <TextInput
-        onChangeText={numerocuotas => setNumerocuotas(numerocuotas)}
-        style={{borderBottomWidth: 2 }}
+        onChangeText={setNumerocuotas}
+        value={numerocuotas}
+        style={{ borderBottomWidth: 2 }}
       />
       <Text>{"\n"}</Text>
       <Text>Valor de la cuota</Text>
-      <TextInput
-        style={{ borderBottomWidth: 2 }}
-        onChangeText={valorcuotas => setValorCuotas(valorcuotas)}
-        valor={resultado}
-      />
+      <TextInput style={{ borderBottomWidth: 2 }} value={valorcuotas} />
       <Text>{"\n"}</Text>
       <Text>Total de la deuda</Text>
-      <TextInput
-        style={{ borderBottomWidth: 2 }}
-        onChangeText={totaldeuda => setTotalDeuda(totaldeuda)}
-        valor={resultado}
-      />
+      <TextInput style={{ borderBottomWidth: 2 }} value={valordeuda} />
 
       <Text>{"\n"}</Text>
-      <Button title="Calcular"
-        onPress={() => calcPrestamo()} />
+      <Button title="Calcular" onPress={calcPrestamo} />
       <Text>{"\n"}</Text>
-      <Button title="Limpiar" onPress={() => calcPrestamo("c")} />
+      <Button title="Limpiar" onPress={limpiar} />
     </View>
   );
 }
@@ -126,9 +116,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 // valor de la cuota=total de la deuda/numeo de Cuotas
